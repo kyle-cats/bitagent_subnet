@@ -47,13 +47,18 @@ class ShuffledJSONDatasetIterator:
 def huggingface_loader(dataset_name, root_data_dir="bitagent.data", split="train", name=None):
     bt.logging.debug(f"Loading {dataset_name}")
     dataset_dir = f"{root_data_dir}/{dataset_name.replace('/','_')}"
-    if os.path.exists(f"{dataset_dir}/state.json") and dataset_name != "BitAgent/tool_shuffle_small":
-        bt.logging.debug(f"Loading from disk ({dataset_dir}) ...")
-        ds = load_from_disk(dataset_dir)
-    else:
-        bt.logging.debug("Loading from web ...") 
-        ds = load_dataset(dataset_name, split=split, download_mode="force_redownload", name=name, token=os.getenv("HF_TOKEN", None))
-        ds.save_to_disk(dataset_dir)
+    #if os.path.exists(f"{dataset_dir}/state.json") and dataset_name != "BitAgent/tool_shuffle_small":
+    #    bt.logging.debug(f"Loading from disk ({dataset_dir}) ...")
+    #    ds = load_from_disk(dataset_dir)
+    #else:
+    print(f"dataset_name: {dataset_name}")
+    bt.logging.debug("Loading from web ...") 
+    print("Always load from web")
+    ds = load_dataset(dataset_name, split=split, download_mode="force_redownload", name=name, token=os.getenv("HF_TOKEN", None))
+        #ds.save_to_disk(dataset_dir)
+    print("--------------------------------")
+    print(ds[0])
+    print(f"--------------------------------")
     bt.logging.debug("Loaded.")
     return ds
 

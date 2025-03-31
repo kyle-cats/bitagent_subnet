@@ -47,7 +47,6 @@ def system_prompt(tools):
 
 
 def llm(self, messages, tools, model_name, hugging_face=False, max_new_tokens=160, temperature=0):
-    
     if not isinstance(tools, str):
         if isinstance(tools, list):
             tools_jsonable = []

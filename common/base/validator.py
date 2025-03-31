@@ -25,7 +25,7 @@ import numpy as np
 import bittensor as bt
 from datetime import datetime, timezone, date
 from huggingface_hub import dataset_info
-from scoring_utils import score_spreading
+# from scoring_utils import score_spreading
 from common.utils.uids import get_alive_uids
 from bitagent.datasources.tools import ToolDataset
 from bitagent.validator.constants import DEPLOYED_DATE, COMPETITION_LENGTH_DAYS, TESTNET_COMPETITION_LENGTH_DAYS, COMPETITION_PREFIX, COMPETITION_PREVIOUS_PREFIX

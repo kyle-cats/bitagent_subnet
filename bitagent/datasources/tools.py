@@ -118,13 +118,19 @@ def cycle_hf_dataset(dataset, seed=572343):
             yield item
 
 class ToolDataset(Iterator):
-    def __init__(self):
+    def __init__(self, shuffle: bool = True):
         super().__init__()
         # Always load the "BitAgent/tool_shuffle_small" dataset
         seed = 572343
         bitagent_ds = huggingface_loader("BitAgent/tool_shuffle_small")
+        self.total_size = len(bitagent_ds)
         # Wrap it in an infinite-cycle generator
-        self.bitagent_iter = cycle_hf_dataset(bitagent_ds, seed=seed)
+        self.shuffle = shuffle
+        if self.shuffle:
+            self.bitagent_iter = cycle_hf_dataset(bitagent_ds, seed=seed)
+        else:
+            self.bitagent_iter = bitagent_ds
+        self.original_ds = bitagent_ds
 
     def __next__(self) -> ToolCallData:
         count = 0
@@ -140,6 +146,7 @@ class ToolDataset(Iterator):
                         data[key] = json.loads(value)
 
                 messages = messages_from_list(data["conversation"])
+                
                 if isinstance(data["tools"], str):
                     tools = [
                         json_schema_to_pydantic_tool(tool)
@@ -156,10 +163,14 @@ class ToolDataset(Iterator):
                         if arg_value["type"] not in TYPES:
                             raise ValueError(f"Inavlid type used type: {arg_value['type']}")
 
+                query = messages[0].content
+                if query.startswith("As we prepare to send our space probe to the distant island on Mars"):
+                    print("*******hit this message INSIDE HERE ....")
                 return ToolCallData(messages=messages, tools=tools)
 
             except Exception as e:
                 bt.logging.debug(f"Issue getting tool call from dataset ... {e}")
+                print(f"Issue getting tool call from dataset ... {e}")
                 pass
 
         # If we tried 25 times and still haven't returned, raise StopIteration

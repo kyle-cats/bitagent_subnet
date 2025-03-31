@@ -89,6 +89,9 @@ class ToolCallTask(Task):
     def generate_task_data(self) -> ToolCallData:
 
         data: ToolCallData = next(self.validator.tool_dataset)
+        query = data.messages[0].content
+        if query.startswith("As we prepare to send our space probe to the distant island on Mars"):
+            print("*******33333 hit this message INSIDE HERE ....")
         random.seed(572343)
         tool_call = find_first_tool_call(data.messages)
         if not tool_call:
@@ -98,8 +101,10 @@ class ToolCallTask(Task):
         # increase number of tools
         for _ in range(random.randint(2,4)):
             # filter out the tools by name that are already in the data.tools
+            #print("-----------get random tools start ------------")
             new_tools = [t for t in next(self.validator.tool_dataset).tools if t.name not in [dt.name for dt in data.tools]]
             data.tools = data.tools + new_tools
+            # print("-----------get random tools end ------------")
         
         # remove all the messages after the first tool call, keeping the assistant
         # this reduces the number of messages needing rewording
