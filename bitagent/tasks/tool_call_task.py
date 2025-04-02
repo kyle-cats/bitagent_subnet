@@ -88,11 +88,8 @@ class ToolCallTask(Task):
 
     def generate_task_data(self) -> ToolCallData:
 
-        data: ToolCallData = next(self.validator.tool_dataset)
-        query = data.messages[0].content
-        if query.startswith("As we prepare to send our space probe to the distant island on Mars"):
-            print("*******33333 hit this message INSIDE HERE ....")
-        random.seed(572343)
+        data: ToolCallData = next(self.validator.task_dataset)
+        random.seed(self.validator.seed)
         tool_call = find_first_tool_call(data.messages)
         if not tool_call:
             # no tool call in the messages, so skip
